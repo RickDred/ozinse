@@ -11,11 +11,11 @@ import (
 
 type User struct {
 	gorm.Model
-	Email    string
-	Password string
-	Name     string
-	Phone    int
-	Role     string
+	Email    string `gorm:"unique" json:"email"`
+	Password string `json:"password"`
+	Name     string `json:"name"`
+	Phone    int    `json:"phone"`
+	Role     string `json:"role"`
 }
 
 var (

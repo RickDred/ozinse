@@ -17,9 +17,7 @@ type DBConfig struct {
 	SSLMode  string
 }
 
-var DB *gorm.DB
-
-func (cfg *DBConfig) InitDB() {
+func (cfg *DBConfig) InitDB() *gorm.DB {
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", cfg.Host, cfg.User, cfg.Password, cfg.DBName, cfg.Port, cfg.SSLMode)
 
@@ -34,5 +32,5 @@ func (cfg *DBConfig) InitDB() {
 
 	fmt.Println("Migrated database")
 
-	DB = db
+	return db
 }

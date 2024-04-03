@@ -10,6 +10,7 @@ import (
 type Handlers interface {
 	Register(*gin.Context)
 	Login(*gin.Context)
+	Authorize() gin.HandlerFunc
 }
 
 type Service interface {

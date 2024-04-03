@@ -11,7 +11,7 @@ import (
 
 var secretKey = []byte("secret_key")
 
-func (t *transport) OnlyAuth() gin.HandlerFunc {
+func (t *transport) Authorize() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {

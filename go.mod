@@ -1,6 +1,7 @@
 module github.com/RickDred/ozinse
 
-go 1.21.1
+go 1.20       // in alem go version is 1.20 -_-
+// go 1.21.1
 
 require github.com/joho/godotenv v1.5.1
 

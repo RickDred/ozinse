@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/RickDred/ozinse/config"
-	"github.com/RickDred/ozinse/internal/app"
+	"github.com/RickDred/ozinse/internal/api"
 	"github.com/joho/godotenv"
 )
 
@@ -28,7 +28,7 @@ func main() {
 
 	db := dbcfg.InitDB()
 
-	app := app.App{
+	app := api.App{
 		DB:   db,
 		Port: ":3000",
 	}

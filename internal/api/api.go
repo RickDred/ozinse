@@ -1,6 +1,8 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/RickDred/ozinse/internal/auth"
 	"github.com/RickDred/ozinse/internal/auth/repository"
 	"github.com/RickDred/ozinse/internal/auth/service"
@@ -10,12 +12,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type App struct {
+type Server struct {
 	DB   *gorm.DB
-	Port string
+	Port int
+	Host string
 }
 
-func (a *App) Start() {
+func (a *Server) Start() {
 	if err := a.DB.AutoMigrate(&models.User{}); err != nil {
 		panic(err)
 	}
@@ -29,5 +32,9 @@ func (a *App) Start() {
 	authGorup := router.Group("/auth")
 	auth.SetRoutes(authGorup, handlers)
 
-	router.Run(a.Port)
+	addr := fmt.Sprintf("%v:%v", a.Host, a.Port)
+
+	if err := router.Run(addr); err != nil {
+		panic(err)
+	}
 }

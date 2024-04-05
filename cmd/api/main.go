@@ -1,36 +1,23 @@
 package main
 
 import (
-	"log"
-	"os"
-
 	"github.com/RickDred/ozinse/config"
 	"github.com/RickDred/ozinse/internal/api"
-	"github.com/joho/godotenv"
+	"github.com/RickDred/ozinse/pkg/db"
 )
 
-func init() {
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-}
 func main() {
-	dbcfg := config.DBConfig{
-		Host:     os.Getenv("DB_HOST"),
-		Port:     os.Getenv("DB_PORT"),
-		User:     os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASSWORD"),
-		DBName:   os.Getenv("DB_NAME"),
-		SSLMode:  os.Getenv("DB_SSLMODE"),
+	cfg := config.NewConfig()
+
+	db, err := db.Connect(cfg.Postgres.DSN())
+	if err != nil {
+		panic(err)
 	}
 
-	db := dbcfg.InitDB()
-
-	app := api.App{
+	app := api.Server{
 		DB:   db,
-		Port: ":3000",
+		Port: cfg.Port,
+		Host: cfg.Host,
 	}
 
 	app.Start()

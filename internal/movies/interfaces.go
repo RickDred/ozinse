@@ -28,6 +28,6 @@ type MovieServiceInterface interface {
 type MovieRepositoryInterface interface {
 	GetByID(context.Context, string) (*models.Movie, error)
 	GetAll(context.Context) ([]models.Movie, error)
-	Search(context.Context, string) ([]models.Movie, error)
-	AddToFavorites(context.Context, string, string) error
+	Search(context.Context, map[string]interface{}) ([]models.Movie, error)
+	AddToFavorites(context.Context, *models.User, *models.Movie) error
 }

@@ -1,5 +1,3 @@
-// internal/movies/repository/movie_repository.go
-
 package repository
 
 import (
@@ -42,11 +40,55 @@ func (r *MovieRepository) GetAll(ctx context.Context) ([]models.Movie, error) {
 }
 
 // Search searches for movies in the database based on a query string.
-func (r *MovieRepository) Search(ctx context.Context, query string) ([]models.Movie, error) {
-	return nil, errors.New("not implemented")
+func (r *MovieRepository) Search(ctx context.Context, criteria map[string]interface{}) ([]models.Movie, error) {
+	var movies []models.Movie
+
+	query := r.db.WithContext(ctx)
+	for key, value := range criteria {
+		switch key {
+		case "title":
+			query = query.Where("title LIKE ?", "%"+value.(string)+"%")
+		case "producer":
+			query = query.Where("producer LIKE ?", "%"+value.(string)+"%")
+		case "director":
+			query = query.Where("director LIKE ?", "%"+value.(string)+"%")
+		case "year":
+			query = query.Where("year = ?", value.(string))
+		case "type":
+			query = query.Where("type = ?", value.(string))
+		case "tag":
+			query = query.Where("tags @> ARRAY[?]::text[]", value.(string))
+		case "tags":
+			tags := value.([]string)
+			for _, tag := range tags {
+				query = query.Where("tags @> ARRAY[?]::text[]", tag)
+			}
+		case "seasons":
+			query = query.Where("seasons = ?", value.(int))
+		}
+	}
+
+	if err := query.Find(&movies).Error; err != nil {
+		return nil, err
+	}
+
+	return movies, nil
 }
 
-// AddToFavorites adds a movie to a user's favorites in the database.
-func (r *MovieRepository) AddToFavorites(ctx context.Context, userID string, movieID string) error {
-	return errors.New("not implemented")
+func (r *MovieRepository) AddToFavorites(ctx context.Context, user *models.User, movie *models.Movie) error {
+	var existingMovie models.Movie
+	if err := r.db.Model(user).Where("id = ?", movie.ID).Association("Favorites").Find(&existingMovie); err == nil {
+		// Movie already exists in favorites
+		return nil
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		// An unexpected error occurred
+		return err
+	}
+
+	// Add movie to favorites
+	if err := r.db.Model(user).Association("Favorites").Append(movie); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -50,21 +50,21 @@ func (s *MovieService) GetMovies(ctx context.Context) ([]models.Movie, error) {
 // SearchMovies searches for movies based on a query string.
 func (s *MovieService) SearchMovies(ctx context.Context, query string) ([]models.Movie, error) {
 	// Search for movies in the repository based on the query string
-	movies, err := s.movieRepo.Search(ctx, query)
-	if err != nil {
-		return nil, err
-	}
+	// movies, err := s.movieRepo.Search(ctx, query)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	return movies, nil
+	return nil, nil
 }
 
 // AddToFavorites adds a movie to a user's favorites.
 func (s *MovieService) AddToFavorites(ctx context.Context, userID string, movieID string) error {
 	// Add the movie to the user's favorites in the repository
-	err := s.movieRepo.AddToFavorites(ctx, userID, movieID)
-	if err != nil {
-		return err
-	}
+	// err := s.movieRepo.AddToFavorites(ctx, userID, movieID)
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 }

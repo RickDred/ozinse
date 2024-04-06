@@ -48,7 +48,7 @@ func NewConfig() *Config {
 			Host:     getEnv("DB_HOST", "localhost"),
 			Port:     postgresPort,
 			User:     getEnv("DB_USER", "postgres"),
-			Password: getEnv("DB_PASSWORD", "passwrod"),
+			Password: getEnv("DB_PASSWORD", "password"),
 			DBName:   getEnv("DB_NAME", "ozinse"),
 			SSLMode:  getEnv("DB_SSLMODE", "disable"),
 		},

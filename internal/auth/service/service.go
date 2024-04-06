@@ -16,12 +16,24 @@ func New(repo auth.Repo) auth.Service {
 }
 
 func (s *service) Register(ctx context.Context, user *models.User) (string, error) {
-	id, err := s.repo.Insert(ctx, user)
+	user.Standardize()
+
+	if err := user.Validate(user.ValidateEmail, user.ValidatePassword); err != nil {
+		return "", err
+	}
+
+	if err := user.HashPassword(); err != nil {
+		return "", err
+	}
+
+	_, err := s.repo.Insert(ctx, user)
 	if err != nil {
 		return "", err
 	}
 
-	token, err := generateJWT(id)
+	user.CleanPassword()
+
+	token, err := generateJWT(user)
 	if err != nil {
 		return "", err
 	}
@@ -39,7 +51,9 @@ func (s *service) Login(ctx context.Context, input *models.User) (string, error)
 		return "", err
 	}
 
-	token, err := generateJWT(user.ID)
+	user.CleanPassword()
+
+	token, err := generateJWT(user)
 	if err != nil {
 		return "", err
 	}

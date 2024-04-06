@@ -51,14 +51,22 @@ func (h *MovieHandler) SearchMovies(c *gin.Context) {
 	c.JSON(http.StatusOK, movies)
 }
 
+func (h *MovieHandler) GetFavorites(c *gin.Context) {
+	// err := h.movieService.AddToFavorites(c.Request.Context(), )
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	// 	return
+	// }
+	// c.JSON(http.StatusOK, gin.H{"message": "Movie added to favorites successfully"})
+}
+
 // AddToFavorites handles the HTTP request to add a movie to favorites.
 func (h *MovieHandler) AddToFavorites(c *gin.Context) {
-	userID := c.Param("userID")
-	movieID := c.Param("movieID")
-	err := h.movieService.AddToFavorites(c.Request.Context(), userID, movieID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"message": "Movie added to favorites successfully"})
+	// movieID := c.Param("movieID")
+	// err := h.movieService.AddToFavorites(c.Request.Context(), userID, movieID)
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	// 	return
+	// }
+	// c.JSON(http.StatusOK, gin.H{"message": "Movie added to favorites successfully"})
 }

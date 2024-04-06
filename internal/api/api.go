@@ -19,7 +19,7 @@ type Server struct {
 }
 
 func (a *Server) Start() {
-	if err := a.DB.AutoMigrate(&models.User{}); err != nil {
+	if err := a.DB.AutoMigrate(&models.User{}, &models.Movie{}, &models.Video{}); err != nil {
 		panic(err)
 	}
 	router := gin.New()

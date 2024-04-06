@@ -12,6 +12,7 @@ type MovieHandlerInterface interface {
 	GetMovies(*gin.Context)
 	GetMovie(*gin.Context)
 	SearchMovies(*gin.Context)
+	GetFavorites(*gin.Context)
 	AddToFavorites(*gin.Context)
 }
 

@@ -8,10 +8,10 @@ import (
 )
 
 type service struct {
-	repo auth.Repo
+	repo auth.RepoInterface
 }
 
-func New(repo auth.Repo) auth.Service {
+func New(repo auth.RepoInterface) auth.ServiceInterface {
 	return &service{repo}
 }
 

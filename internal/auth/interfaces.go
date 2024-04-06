@@ -7,18 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Handlers interface {
+type HandlersInterface interface {
 	Register(*gin.Context)
 	Login(*gin.Context)
 	Authorize() gin.HandlerFunc
 }
 
-type Service interface {
+type ServiceInterface interface {
 	Register(context.Context, *models.User) (string, error)
 	Login(context.Context, *models.User) (string, error)
 }
 
-type Repo interface {
+type RepoInterface interface {
 	Insert(context.Context, *models.User) (uint, error)
 	GetByEmail(context.Context, string) (*models.User, error)
 	GetByID(context.Context, uint) (*models.User, error)

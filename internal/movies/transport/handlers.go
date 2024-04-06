@@ -5,24 +5,22 @@ package transport
 import (
 	"net/http"
 
-	"github.com/RickDred/ozinse/internal/movies/service"
+	"github.com/RickDred/ozinse/internal/movies"
 	"github.com/gin-gonic/gin"
 )
 
-// MovieHandlerImpl implements the MovieHandler interface.
-type MovieHandlerImpl struct {
-	movieService service.MovieService
+type MovieHandler struct {
+	movieService movies.MovieServiceInterface
 }
 
-// NewMovieHandler creates a new instance of MovieHandlerImpl.
-func NewMovieHandler(movieService service.MovieService) *MovieHandlerImpl {
-	return &MovieHandlerImpl{
+func NewMovieHandler(movieService movies.MovieServiceInterface) movies.MovieHandlerInterface {
+	return &MovieHandler{
 		movieService: movieService,
 	}
 }
 
 // GetMovies handles the HTTP request to get all movies.
-func (h *MovieHandlerImpl) GetMovies(c *gin.Context) {
+func (h *MovieHandler) GetMovies(c *gin.Context) {
 	movies, err := h.movieService.GetMovies(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -32,7 +30,7 @@ func (h *MovieHandlerImpl) GetMovies(c *gin.Context) {
 }
 
 // GetMovie handles the HTTP request to get a single movie by ID.
-func (h *MovieHandlerImpl) GetMovie(c *gin.Context) {
+func (h *MovieHandler) GetMovie(c *gin.Context) {
 	movieID := c.Param("id")
 	movie, err := h.movieService.GetMovieByID(c.Request.Context(), movieID)
 	if err != nil {
@@ -43,7 +41,7 @@ func (h *MovieHandlerImpl) GetMovie(c *gin.Context) {
 }
 
 // SearchMovies handles the HTTP request to search for movies.
-func (h *MovieHandlerImpl) SearchMovies(c *gin.Context) {
+func (h *MovieHandler) SearchMovies(c *gin.Context) {
 	query := c.Query("q")
 	movies, err := h.movieService.SearchMovies(c.Request.Context(), query)
 	if err != nil {
@@ -54,7 +52,7 @@ func (h *MovieHandlerImpl) SearchMovies(c *gin.Context) {
 }
 
 // AddToFavorites handles the HTTP request to add a movie to favorites.
-func (h *MovieHandlerImpl) AddToFavorites(c *gin.Context) {
+func (h *MovieHandler) AddToFavorites(c *gin.Context) {
 	userID := c.Param("userID")
 	movieID := c.Param("movieID")
 	err := h.movieService.AddToFavorites(c.Request.Context(), userID, movieID)

@@ -13,7 +13,7 @@ type repo struct {
 	db *gorm.DB
 }
 
-func New(db *gorm.DB) auth.Repo {
+func New(db *gorm.DB) auth.RepoInterface {
 	return &repo{db}
 }
 
@@ -36,6 +36,7 @@ func (r *repo) GetByEmail(ctx context.Context, email string) (*models.User, erro
 	}
 	return &user, nil
 }
+
 func (r *repo) GetByID(ctx context.Context, id uint) (*models.User, error) {
 	var user models.User
 	result := r.db.WithContext(ctx).First(&user, id)

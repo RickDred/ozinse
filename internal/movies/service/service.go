@@ -7,16 +7,16 @@ import (
 	"errors"
 
 	"github.com/RickDred/ozinse/internal/models"
-	"github.com/RickDred/ozinse/internal/movies/repository"
+	"github.com/RickDred/ozinse/internal/movies"
 )
 
 // MovieService implements the MovieService interface.
 type MovieService struct {
-	movieRepo repository.MovieRepository
+	movieRepo movies.MovieRepositoryInterface
 }
 
 // NewMovieService creates a new instance of MovieServiceImpl.
-func NewMovieService(movieRepo repository.MovieRepository) *MovieService {
+func NewMovieService(movieRepo movies.MovieRepositoryInterface) movies.MovieServiceInterface {
 	return &MovieService{
 		movieRepo: movieRepo,
 	}

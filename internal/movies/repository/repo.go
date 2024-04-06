@@ -7,15 +7,15 @@ import (
 	"errors"
 
 	"github.com/RickDred/ozinse/internal/models"
+	"github.com/RickDred/ozinse/internal/movies"
 )
 
 // MovieRepository implements the MovieRepository interface.
-type MovieRepository struct {
-	// Add any necessary dependencies here
+type MovieRepository struct { // Add any necessary dependencies here
 }
 
 // NewMovieRepository creates a new instance of MovieRepositoryImpl.
-func NewMovieRepository() *MovieRepository {
+func NewMovieRepository() movies.MovieRepositoryInterface {
 	return &MovieRepository{}
 }
 

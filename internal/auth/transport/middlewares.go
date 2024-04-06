@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -52,9 +53,22 @@ func (t *transport) Authorize() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		c.Set("userID", claims["user_id"])
+
+		expUnix, ok := claims["exp"].(float64)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid expiration time"})
+			c.Abort()
+			return
+		}
+		expTime := time.Unix(int64(expUnix), 0)
+		if expTime.Before(time.Now()) {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token has expired"})
+			c.Abort()
+			return
+		}
+
+		c.Set("user", claims["user"])
 
 		c.Next()
 	}
-
 }

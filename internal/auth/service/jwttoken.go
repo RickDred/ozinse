@@ -3,7 +3,7 @@ package service
 import (
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 var secretKey = []byte("secret_key")
@@ -16,7 +16,6 @@ func generateJWT(id uint) (string, error) {
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 	tokenString, err := token.SignedString(secretKey)
-
 	if err != nil {
 		return "", err
 	}

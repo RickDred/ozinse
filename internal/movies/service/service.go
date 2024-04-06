@@ -37,7 +37,7 @@ func (s *MovieService) GetMovieByID(ctx context.Context, id string) (*models.Mov
 }
 
 // GetMovies returns a list of movies.
-func (s *MovieService) GetMovies(ctx context.Context) ([]*models.Movie, error) {
+func (s *MovieService) GetMovies(ctx context.Context) ([]models.Movie, error) {
 	// Retrieve all movies from the repository
 	movies, err := s.movieRepo.GetAll(ctx)
 	if err != nil {
@@ -48,7 +48,7 @@ func (s *MovieService) GetMovies(ctx context.Context) ([]*models.Movie, error) {
 }
 
 // SearchMovies searches for movies based on a query string.
-func (s *MovieService) SearchMovies(ctx context.Context, query string) ([]*models.Movie, error) {
+func (s *MovieService) SearchMovies(ctx context.Context, query string) ([]models.Movie, error) {
 	// Search for movies in the repository based on the query string
 	movies, err := s.movieRepo.Search(ctx, query)
 	if err != nil {

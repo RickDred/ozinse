@@ -19,15 +19,15 @@ type MovieHandlerInterface interface {
 // MovieServiceInterface defines the methods implemented by the movie service.
 type MovieServiceInterface interface {
 	GetMovieByID(context.Context, string) (*models.Movie, error)
-	GetMovies(context.Context) ([]*models.Movie, error)
-	SearchMovies(context.Context, string) ([]*models.Movie, error)
+	GetMovies(context.Context) ([]models.Movie, error)
+	SearchMovies(context.Context, string) ([]models.Movie, error)
 	AddToFavorites(context.Context, string, string) error
 }
 
 // MovieRepositoryInterface defines the methods implemented by the movie repository.
 type MovieRepositoryInterface interface {
 	GetByID(context.Context, string) (*models.Movie, error)
-	GetAll(context.Context) ([]*models.Movie, error)
-	Search(context.Context, string) ([]*models.Movie, error)
+	GetAll(context.Context) ([]models.Movie, error)
+	Search(context.Context, string) ([]models.Movie, error)
 	AddToFavorites(context.Context, string, string) error
 }

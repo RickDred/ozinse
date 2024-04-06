@@ -1,16 +1,16 @@
 package models
 
 type Movie struct {
-	ID          uint `gorm:"primarykey"`
-	Logo        string
-	Title       string
-	Description string
-	Producer    string
-	Director    string
-	Year        string
-	Type        string
-	Seasons     int
-	Episodes    int
+	ID          uint   `gorm:"primarykey"`
+	Logo        string `gorm:"not null"`
+	Title       string `gorm:"not null"`
+	Description string `gorm:"not null"`
+	Producer    string `gorm:"not null"`
+	Director    string `gorm:"not null"`
+	Year        string `gorm:"not null"`
+	Type        string `gorm:"not null"`
+	Seasons     int    `gorm:"not null"`
+	Episodes    int    `gorm:"not null"`
 	Minutes     int
 	Screenshots []string `gorm:"type:text[]"`
 }
@@ -18,9 +18,10 @@ type Movie struct {
 type Video struct {
 	ID       uint `gorm:"primarykey"`
 	MovieID  uint
-	Movie    Movie `gorm:"constraint:OnDelete:CASCADE;"`
-	Name     string
+	Movie    Movie  `gorm:"constraint:OnDelete:CASCADE;"`
+	Name     string `gorm:"not null"`
+	Ref      string `gorm:"not null"`
 	Season   int
 	Episode  int
-	Duration int
+	Duration int `gorm:"not null"`
 }

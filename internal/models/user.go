@@ -11,11 +11,12 @@ import (
 
 type User struct {
 	gorm.Model
-	Email    string `gorm:"unique" json:"email"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
-	Phone    int    `json:"phone"`
-	Role     string `json:"role"`
+	Email    string   `gorm:"unique" json:"email"`
+	Password string   `json:"password"`
+	Name     string   `json:"name"`
+	Phone    int      `json:"phone"`
+	Role     string   `json:"role"`
+	Movies   []*Movie `gorm:"many2many:user_favorites;"`
 }
 
 var (

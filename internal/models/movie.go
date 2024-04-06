@@ -14,6 +14,7 @@ type Movie struct {
 	Episodes    int      `gorm:"not null"`
 	Minutes     int
 	Screenshots []string `gorm:"type:text[]"`
+	Users       []*User  `gorm:"many2many:user_favorites;"`
 }
 
 type Video struct {

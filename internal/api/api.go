@@ -4,10 +4,14 @@ import (
 	"fmt"
 
 	"github.com/RickDred/ozinse/internal/auth"
-	"github.com/RickDred/ozinse/internal/auth/repository"
-	"github.com/RickDred/ozinse/internal/auth/service"
-	"github.com/RickDred/ozinse/internal/auth/transport"
+	arepo "github.com/RickDred/ozinse/internal/auth/repository"
+	aservice "github.com/RickDred/ozinse/internal/auth/service"
+	atransport "github.com/RickDred/ozinse/internal/auth/transport"
 	"github.com/RickDred/ozinse/internal/models"
+	"github.com/RickDred/ozinse/internal/movies"
+	mrepo "github.com/RickDred/ozinse/internal/movies/repository"
+	mservice "github.com/RickDred/ozinse/internal/movies/service"
+	mtransport "github.com/RickDred/ozinse/internal/movies/transport"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -26,11 +30,19 @@ func (a *Server) Start() {
 	router.Use(gin.Logger())
 
 	// need to move into other function
-	repo := repository.New(a.DB)
-	service := service.New(repo)
-	handlers := transport.New(service)
+	authrepo := arepo.New(a.DB)
+	authservice := aservice.New(authrepo)
+	authhandlers := atransport.New(authservice)
 	authGorup := router.Group("/auth")
-	auth.SetRoutes(authGorup, handlers)
+	auth.SetRoutes(authGorup, authhandlers)
+
+	router.Use(authhandlers.Authorize())
+
+	moviesrepo := mrepo.NewMovieRepository(a.DB)
+	mserv := mservice.NewMovieService(moviesrepo)
+	mhandl := mtransport.NewMovieHandler(mserv)
+	moviesGroup := router.Group("/movies")
+	movies.InitRoutes(moviesGroup, mhandl)
 
 	addr := fmt.Sprintf("%v:%v", a.Host, a.Port)
 

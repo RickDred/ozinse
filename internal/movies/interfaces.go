@@ -2,6 +2,7 @@ package movies
 
 import (
 	"context"
+	"net/url"
 
 	"github.com/RickDred/ozinse/internal/models"
 	"github.com/gin-gonic/gin"
@@ -20,7 +21,7 @@ type MovieHandlerInterface interface {
 type MovieServiceInterface interface {
 	GetMovieByID(context.Context, string) (*models.Movie, error)
 	GetMovies(context.Context) ([]models.Movie, error)
-	SearchMovies(context.Context, string) ([]models.Movie, error)
+	SearchMovies(context.Context, url.Values) ([]models.Movie, error)
 	AddToFavorites(context.Context, string, string) error
 }
 

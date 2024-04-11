@@ -17,6 +17,10 @@ type Movie struct {
 	Users       []*User  `gorm:"many2many:user_favorites;"`
 }
 
+type MoviesFilter struct {
+	
+}
+
 type Video struct {
 	ID       uint `gorm:"primarykey"`
 	MovieID  uint

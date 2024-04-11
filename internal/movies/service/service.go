@@ -5,6 +5,7 @@ package service
 import (
 	"context"
 	"errors"
+	"net/url"
 
 	"github.com/RickDred/ozinse/internal/models"
 	"github.com/RickDred/ozinse/internal/movies"
@@ -24,7 +25,6 @@ func NewMovieService(movieRepo movies.MovieRepositoryInterface) movies.MovieServ
 
 // GetMovieByID returns a movie by its ID.
 func (s *MovieService) GetMovieByID(ctx context.Context, id string) (*models.Movie, error) {
-	// Retrieve the movie from the repository by ID
 	movie, err := s.movieRepo.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -48,14 +48,13 @@ func (s *MovieService) GetMovies(ctx context.Context) ([]models.Movie, error) {
 }
 
 // SearchMovies searches for movies based on a query string.
-func (s *MovieService) SearchMovies(ctx context.Context, query string) ([]models.Movie, error) {
-	// Search for movies in the repository based on the query string
-	// movies, err := s.movieRepo.Search(ctx, query)
-	// if err != nil {
-	// 	return nil, err
-	// }
+func (s *MovieService) SearchMovies(ctx context.Context, query url.Values) ([]models.Movie, error) {
+	movies, err := s.movieRepo.Search(ctx, query)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	return movies, nil
 }
 
 // AddToFavorites adds a movie to a user's favorites.

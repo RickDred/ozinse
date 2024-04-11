@@ -42,7 +42,7 @@ func (h *MovieHandler) GetMovie(c *gin.Context) {
 
 // SearchMovies handles the HTTP request to search for movies.
 func (h *MovieHandler) SearchMovies(c *gin.Context) {
-	query := c.Query("q")
+	query := c.Request.URL.Query()
 	movies, err := h.movieService.SearchMovies(c.Request.Context(), query)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

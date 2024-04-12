@@ -12,8 +12,9 @@ func InitRoutes(router *gin.RouterGroup, handlers MovieHandlerInterface) {
 	router.POST("/", handlers.CreateMovie)
 	router.PUT("/:id", handlers.EditMovie)
 	router.DELETE("/:id", handlers.DeleteMovie)
-	router.GET("/series", handlers.GetMovieSeries)
-	router.GET("/category/:name", handlers.GetMoviesByCategory)
+	router.GET("/series/:id", handlers.GetMovieSeries)
+	router.GET("/categories/:name", handlers.GetMoviesByCategory)
+	router.POST("/series", handlers.UploadVideo)
 
 	// wait a minute
 	router.GET("/search", handlers.SearchMovies)

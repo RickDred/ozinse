@@ -129,6 +129,23 @@ func (h *MovieHandler) DeleteMovie(c *gin.Context) {
 }
 
 func (h *MovieHandler) GetMovieSeries(c *gin.Context) {
+	movieID := c.Param("id")
+
+	// Parse movie ID to uint
+	id, err := strconv.ParseUint(movieID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid movie ID"})
+		return
+	}
+
+	// Call the service layer to get movie series
+	videos, err := h.movieService.GetMovieSeries(c.Request.Context(), uint(id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, videos)
 }
 
 func (h *MovieHandler) GetMoviesByCategory(c *gin.Context) {
@@ -143,17 +160,26 @@ func (h *MovieHandler) GetMoviesByCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, movies)
 }
 
+func (h *MovieHandler) SearchMovies(c *gin.Context) {
+	var filters models.MoviesFilter
+
+	if err := c.ShouldBindQuery(&filters); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	movies, err := h.movieService.SearchMovies(c.Request.Context(), filters)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, movies)
+}
+
 ///// Wait a minute
 
-// SearchMovies handles the HTTP request to search for movies.
-func (h *MovieHandler) SearchMovies(c *gin.Context) {
-	// query := c.Request.URL.Query()
-	// movies, err := h.movieService.SearchMovies(c.Request.Context(), query)
-	// if err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// 	return
-	// }
-	// c.JSON(http.StatusOK, movies)
+func (h *MovieHandler) UploadVideo(c *gin.Context) {
 }
 
 func (h *MovieHandler) GetFavorites(c *gin.Context) {

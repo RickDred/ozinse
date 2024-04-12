@@ -2,7 +2,6 @@ package movies
 
 import (
 	"context"
-	"net/url"
 
 	"github.com/RickDred/ozinse/internal/models"
 	"github.com/gin-gonic/gin"
@@ -18,6 +17,8 @@ type MovieHandlerInterface interface {
 	GetMovieSeries(*gin.Context)
 	GetMoviesByCategory(*gin.Context)
 
+	UploadVideo(*gin.Context)
+
 	SearchMovies(*gin.Context)
 	GetFavorites(*gin.Context)
 	AddToFavorites(*gin.Context)
@@ -30,10 +31,13 @@ type MovieServiceInterface interface {
 	CreateMovie(context.Context, *models.Movie) (*models.Movie, error)
 	EditMovie(context.Context, uint, *models.Movie) (*models.Movie, error)
 	DeleteMovie(context.Context, uint) error
-	// GetMovieSeries(context.Context)
+	GetMovieSeries(context.Context, uint) ([]models.Video, error)
 	GetMoviesByCategory(context.Context, string) ([]models.Movie, error)
 
-	SearchMovies(context.Context, url.Values) ([]models.Movie, error)
+	UploadVideo(context.Context, *models.Video) (*models.Video, error)
+
+	SearchMovies(ctx context.Context, filters models.MoviesFilter) ([]models.Movie, error)
+
 	AddToFavorites(context.Context, string, string) error
 }
 
@@ -46,6 +50,10 @@ type MovieRepositoryInterface interface {
 	Delete(context.Context, uint) error
 	GetAllByCategory(context.Context, string) ([]models.Movie, error)
 
-	Search(context.Context, map[string]interface{}) ([]models.Movie, error)
+	GetMovieSeries(ctx context.Context, movieID uint) ([]models.Video, error)
+	UploadVideo(ctx context.Context, video *models.Video) (*models.Video, error)
+
+	Search(ctx context.Context, filters models.MoviesFilter) ([]models.Movie, error)
+
 	AddToFavorites(context.Context, *models.User, *models.Movie) error
 }

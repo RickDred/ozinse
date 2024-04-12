@@ -71,34 +71,58 @@ func (r *MovieRepository) GetAllByCategory(ctx context.Context, category string)
 	return movies, nil
 }
 
-// wait a minute
+func (r *MovieRepository) GetMovieSeries(ctx context.Context, movieID uint) ([]models.Video, error) {
+	var videos []models.Video
+	if err := r.db.WithContext(ctx).Where("movie_id = ?", movieID).Find(&videos).Error; err != nil {
+		return nil, err
+	}
+	return videos, nil
+}
 
-// Search searches for movies in the database based on a query string.
-func (r *MovieRepository) Search(ctx context.Context, criteria map[string]interface{}) ([]models.Movie, error) {
+func (r *MovieRepository) UploadVideo(ctx context.Context, video *models.Video) (*models.Video, error) {
+	if err := r.db.WithContext(ctx).Create(video).Error; err != nil {
+		return nil, err
+	}
+	return video, nil
+}
+
+func (r *MovieRepository) Search(ctx context.Context, filters models.MoviesFilter) ([]models.Movie, error) {
 	var movies []models.Movie
 
 	query := r.db.WithContext(ctx)
-	for key, value := range criteria {
-		switch key {
-		case "title":
-			query = query.Where("title LIKE ?", "%"+value.(string)+"%")
-		case "producer":
-			query = query.Where("producer LIKE ?", "%"+value.(string)+"%")
-		case "director":
-			query = query.Where("director LIKE ?", "%"+value.(string)+"%")
+
+	if filters.Title != "" {
+		query = query.Where("title LIKE ?", "%"+filters.Title+"%")
+	}
+
+	if filters.Genre != "" {
+		query = query.Joins("JOIN movie_categories ON movies.id = movie_categories.movie_id").
+			Joins("JOIN categories ON movie_categories.category_id = categories.id").
+			Where("categories.name = ?", filters.Genre)
+	}
+
+	if filters.Year != "" {
+		query = query.Where("year = ?", filters.Year)
+	}
+
+	if filters.Type != "" {
+		query = query.Where("type = ?", filters.Type)
+	}
+
+	if filters.SortBy != "" {
+		switch filters.SortBy {
 		case "year":
-			query = query.Where("year = ?", value.(string))
-		case "type":
-			query = query.Where("type = ?", value.(string))
-		case "tag":
-			query = query.Where("tags @> ARRAY[?]::text[]", value.(string))
-		case "tags":
-			tags := value.([]string)
-			for _, tag := range tags {
-				query = query.Where("tags @> ARRAY[?]::text[]", tag)
+			if filters.SortDesc {
+				query = query.Order("year DESC")
+			} else {
+				query = query.Order("year ASC")
 			}
-		case "seasons":
-			query = query.Where("seasons = ?", value.(int))
+		case "title":
+			if filters.SortDesc {
+				query = query.Order("title DESC")
+			} else {
+				query = query.Order("title ASC")
+			}
 		}
 	}
 
@@ -108,6 +132,8 @@ func (r *MovieRepository) Search(ctx context.Context, criteria map[string]interf
 
 	return movies, nil
 }
+
+// wait a minute
 
 func (r *MovieRepository) AddToFavorites(ctx context.Context, user *models.User, movie *models.Movie) error {
 	var existingMovie models.Movie

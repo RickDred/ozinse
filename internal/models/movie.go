@@ -9,15 +9,22 @@ type Movie struct {
 	Director    string `gorm:"not null"`
 	Year        string `gorm:"not null"`
 	Type        string `gorm:"not null"`
-	Seasons     int   
-	Episodes    int   
+	Seasons     int
+	Episodes    int
 	Minutes     int
 	Screenshots []string    `gorm:"type:text[]"`
 	Categories  []*Category `gorm:"many2many:movie_categories;"`
 	Users       []*User     `gorm:"many2many:user_favorites;"`
 }
 
-type MoviesFilter struct{}
+type MoviesFilter struct {
+	Title    string `form:"title"`
+	Genre    string `form:"genre"`
+	Year     string `form:"year"`
+	Type     string `form:"type"`
+	SortBy   string `form:"sort_by"`
+	SortDesc bool   `form:"sort_desc"`
+}
 
 type Video struct {
 	ID       uint `gorm:"primarykey"`

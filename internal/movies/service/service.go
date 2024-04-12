@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"net/url"
 
 	"github.com/RickDred/ozinse/internal/models"
 	"github.com/RickDred/ozinse/internal/movies"
@@ -44,7 +43,6 @@ func (s *MovieService) EditMovie(ctx context.Context, id uint, updatedMovie *mod
 }
 
 func (s *MovieService) DeleteMovie(ctx context.Context, id uint) error {
-	
 	return s.repo.Delete(ctx, id)
 }
 
@@ -61,14 +59,16 @@ func (s *MovieService) GetMovies(ctx context.Context) ([]models.Movie, error) {
 	return movies, nil
 }
 
-func (s *MovieService) SearchMovies(ctx context.Context, query url.Values) ([]models.Movie, error) {
-	// movies, err := s.movieRepo.Search(ctx, query)
-	// if err != nil {
-	// 	return nil, err
-	// }
+func (s *MovieService) GetMovieSeries(ctx context.Context, movieID uint) ([]models.Video, error) {
+	return s.repo.GetMovieSeries(ctx, movieID)
+}
 
-	// return movies, nil
-	return nil, nil
+func (s *MovieService) UploadVideo(ctx context.Context, video *models.Video) (*models.Video, error) {
+	return s.repo.UploadVideo(ctx, video)
+}
+
+func (s *MovieService) SearchMovies(ctx context.Context, filters models.MoviesFilter) ([]models.Movie, error) {
+	return s.repo.Search(ctx, filters)
 }
 
 func (s *MovieService) AddToFavorites(ctx context.Context, userID string, movieID string) error {

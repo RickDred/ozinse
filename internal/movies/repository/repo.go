@@ -18,12 +18,12 @@ func NewMovieRepository(db *gorm.DB) movies.MovieRepositoryInterface {
 	return &MovieRepository{db}
 }
 
-func (r *MovieRepository) GetByID(ctx context.Context, id string) (*models.Movie, error) {
+func (r *MovieRepository) GetByID(ctx context.Context, id uint) (*models.Movie, error) {
 	var movie models.Movie
 	result := r.db.WithContext(ctx).Where("id = ?", id).First(&movie)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
-			return nil, fmt.Errorf("movie with id %s not found", id)
+			return nil, fmt.Errorf("movie with id %v not found", id)
 		}
 		return nil, result.Error
 	}
@@ -38,6 +38,40 @@ func (r *MovieRepository) GetAll(ctx context.Context) ([]models.Movie, error) {
 	}
 	return movies, nil
 }
+
+func (r *MovieRepository) Insert(ctx context.Context, movie *models.Movie) (*models.Movie, error) {
+	if err := r.db.WithContext(ctx).Create(movie).Error; err != nil {
+		return nil, err
+	}
+	return movie, nil
+}
+
+func (r *MovieRepository) Update(ctx context.Context, id uint, updatedMovie *models.Movie) (*models.Movie, error) {
+	if err := r.db.WithContext(ctx).Model(&models.Movie{}).Where("id = ?", id).Updates(updatedMovie).Error; err != nil {
+		return nil, err
+	}
+	return updatedMovie, nil
+}
+
+func (r *MovieRepository) Delete(ctx context.Context, id uint) error {
+	if err := r.db.WithContext(ctx).Delete(&models.Movie{}, id).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *MovieRepository) GetAllByCategory(ctx context.Context, category string) ([]models.Movie, error) {
+	var movies []models.Movie
+	if err := r.db.WithContext(ctx).Joins("JOIN movie_categories ON movies.id = movie_categories.movie_id").
+		Joins("JOIN categories ON movie_categories.category_id = categories.id").
+		Where("categories.name = ?", category).
+		Find(&movies).Error; err != nil {
+		return nil, err
+	}
+	return movies, nil
+}
+
+// wait a minute
 
 // Search searches for movies in the database based on a query string.
 func (r *MovieRepository) Search(ctx context.Context, criteria map[string]interface{}) ([]models.Movie, error) {

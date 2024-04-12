@@ -1,0 +1,22 @@
+package helpers
+
+import (
+	"errors"
+
+	"github.com/RickDred/ozinse/internal/models"
+	"github.com/gin-gonic/gin"
+)
+
+func GetUserFromGin(c *gin.Context) (*models.User, error) {
+	user, exists := c.Get("user")
+	if !exists {
+		return nil, errors.New("Not Authorized")
+	}
+
+	userModel, ok := user.(*models.User)
+	if !ok {
+		return nil, errors.New("Not Authorized")
+	}
+
+	return userModel, nil
+}

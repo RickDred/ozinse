@@ -15,7 +15,7 @@ func GetUserFromGin(c *gin.Context) (*models.User, error) {
 
 	userModel, ok := user.(*models.User)
 	if !ok {
-		return nil, errors.New("Not Authorized")
+		return nil, errors.New("Forbiden")
 	}
 
 	return userModel, nil

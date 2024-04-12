@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/RickDred/ozinse/internal/models"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -67,7 +68,30 @@ func (t *transport) Authorize() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user", claims["user"])
+		userClaim, ok := claims["user"]
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "User claim not found in token"})
+			c.Abort()
+			return
+		}
+
+		userMap, ok := userClaim.(map[string]interface{})
+		if !ok {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected user type"})
+			c.Abort()
+			return
+		}
+
+		// Create a new models.User object from the user map
+		user := &models.User{
+			Name:     userMap["name"].(string),
+			Email:    userMap["email"].(string),
+			Password: userMap["password"].(string),
+			Phone:    int(userMap["phone"].(float64)),
+			Role:     userMap["role"].(string),
+		}
+
+		c.Set("user", user)
 
 		c.Next()
 	}

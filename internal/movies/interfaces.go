@@ -20,8 +20,10 @@ type MovieHandlerInterface interface {
 	UploadVideo(*gin.Context)
 
 	SearchMovies(*gin.Context)
+
 	GetFavorites(*gin.Context)
 	AddToFavorites(*gin.Context)
+	DeleteFavority(*gin.Context)
 }
 
 // MovieServiceInterface defines the methods implemented by the movie service.
@@ -38,7 +40,9 @@ type MovieServiceInterface interface {
 
 	SearchMovies(ctx context.Context, filters models.MoviesFilter) ([]models.Movie, error)
 
-	AddToFavorites(context.Context, string, string) error
+	AddToFavorites(context.Context, *models.User, uint) error
+	GetFavorites(context.Context, *models.User) ([]models.Movie, error)
+	DeleteFavority(context.Context, *models.User, uint) error
 }
 
 // MovieRepositoryInterface defines the methods implemented by the movie repository.
@@ -55,5 +59,7 @@ type MovieRepositoryInterface interface {
 
 	Search(ctx context.Context, filters models.MoviesFilter) ([]models.Movie, error)
 
-	AddToFavorites(context.Context, *models.User, *models.Movie) error
+	AddToFavorites(context.Context, *models.User, uint) error
+	GetFavorites(context.Context, *models.User) ([]models.Movie, error)
+	DeleteFavority(context.Context, *models.User, uint) error
 }

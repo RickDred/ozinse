@@ -71,12 +71,3 @@ func (s *MovieService) SearchMovies(ctx context.Context, filters models.MoviesFi
 	return s.repo.Search(ctx, filters)
 }
 
-func (s *MovieService) AddToFavorites(ctx context.Context, userID string, movieID string) error {
-	// Add the movie to the user's favorites in the repository
-	// err := s.movieRepo.AddToFavorites(ctx, userID, movieID)
-	// if err != nil {
-	// 	return err
-	// }
-
-	return nil
-}

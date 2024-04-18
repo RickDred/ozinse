@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/RickDred/ozinse/internal/models"
@@ -131,24 +130,4 @@ func (r *MovieRepository) Search(ctx context.Context, filters models.MoviesFilte
 	}
 
 	return movies, nil
-}
-
-// wait a minute
-
-func (r *MovieRepository) AddToFavorites(ctx context.Context, user *models.User, movie *models.Movie) error {
-	var existingMovie models.Movie
-	if err := r.db.Model(user).Where("id = ?", movie.ID).Association("Favorites").Find(&existingMovie); err == nil {
-		// Movie already exists in favorites
-		return nil
-	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
-		// An unexpected error occurred
-		return err
-	}
-
-	// Add movie to favorites
-	if err := r.db.Model(user).Association("Favorites").Append(movie); err != nil {
-		return err
-	}
-
-	return nil
 }

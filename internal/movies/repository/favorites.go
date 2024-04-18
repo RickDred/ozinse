@@ -11,15 +11,21 @@ func (r *MovieRepository) AddToFavorites(ctx context.Context, user *models.User,
 	if err := r.db.Model(user).Association("Movies").Find(&user.Movies); err != nil {
 		return errors.Wrap(err, "failed to preload user's favorite movies")
 	}
-
 	for _, favMovie := range user.Movies {
 		if favMovie.ID == movieID {
 			return errors.New("movie already exists in user's favorites")
 		}
 	}
-	if err := r.db.Model(user).Association("Movies").Append(movieID); err != nil {
+
+	var movie models.Movie
+	if err := r.db.First(&movie, movieID).Error; err != nil {
+		return errors.Wrap(err, "failed to find movie")
+	}
+
+	if err := r.db.Model(user).Association("Movies").Append(&movie); err != nil {
 		return errors.Wrap(err, "failed to add movie to user's favorites")
 	}
+
 	return nil
 }
 

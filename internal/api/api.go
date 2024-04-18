@@ -56,6 +56,14 @@ func (a *Server) Start() {
 
 	addr := fmt.Sprintf("%v:%v", a.Host, a.Port)
 
+	// authservice.Register(context.Background(), &models.User{
+	// 	Email:    "admin@admin.com",
+	// 	Password: "123456",
+	// 	Role:     "admin",
+	// 	Name:     "admin",
+	// 	Phone:    87784614283,
+	// })
+
 	if err := router.Run(addr); err != nil {
 		panic(err)
 	}

@@ -12,6 +12,10 @@ import (
 	mrepo "github.com/RickDred/ozinse/internal/movies/repository"
 	mservice "github.com/RickDred/ozinse/internal/movies/service"
 	mtransport "github.com/RickDred/ozinse/internal/movies/transport"
+	"github.com/RickDred/ozinse/internal/users"
+	urepo "github.com/RickDred/ozinse/internal/users/repository"
+	uservice "github.com/RickDred/ozinse/internal/users/service"
+	utransport "github.com/RickDred/ozinse/internal/users/transport"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -43,6 +47,12 @@ func (a *Server) Start() {
 	mhandl := mtransport.NewMovieHandler(mserv)
 	moviesGroup := router.Group("/movies")
 	movies.InitRoutes(moviesGroup, mhandl)
+
+	usersrepo := urepo.NewUsersRepository(a.DB)
+	usersserv := uservice.NewService(usersrepo)
+	usershandl := utransport.NewHandler(usersserv)
+	usersGroup := router.Group("/users")
+	users.InitRoutes(usersGroup, usershandl)
 
 	addr := fmt.Sprintf("%v:%v", a.Host, a.Port)
 

@@ -49,6 +49,10 @@ func (r *repo) GetByID(ctx context.Context, id uint) (*models.User, error) {
 	return &user, nil
 }
 
+func (r *repo) PasswordRecover(ctx context.Context, user *models.User) error {
+	return r.db.Save(user).Error
+}
+
 func (r *repo) GetAll(ctx context.Context) ([]models.User, error) {
 	var users []models.User
 	result := r.db.WithContext(ctx).Find(&users)

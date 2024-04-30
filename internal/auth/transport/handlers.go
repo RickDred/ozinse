@@ -55,3 +55,21 @@ func (t *transport) Login(c *gin.Context) {
 
 	c.JSON(200, gin.H{"token": token})
 }
+
+func (t *transport) PasswordRecover(c *gin.Context) {
+	var credentials struct {
+		Email    string `json:"email"`
+		Password string `json:"new_password"`
+	}
+	user := &models.User{
+		Email:    credentials.Email,
+		Password: credentials.Password,
+	}
+	isok, err := t.service.PasswordRecover(c.Request.Context(), user)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, gin.H{"is success": isok})
+}

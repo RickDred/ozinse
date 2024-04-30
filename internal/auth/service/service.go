@@ -71,3 +71,25 @@ func (s *service) Login(ctx context.Context, input *models.User) (string, error)
 
 	return token, nil
 }
+
+func (s *service) PasswordRecover(ctx context.Context, user *models.User) (bool, error) {
+	exUser, err := s.repo.GetByEmail(ctx, user.Email)
+	if err != nil {
+		return false, err
+	}
+
+	if err := user.ValidatePassword(); err != nil {
+		return false, err
+	}
+
+	exUser.Password = user.Password
+	if err := exUser.HashPassword(); err != nil {
+		return false, err
+	}
+
+	if err := s.repo.PasswordRecover(ctx, exUser); err != nil {
+		return false, err
+	}
+
+	return true, nil
+}

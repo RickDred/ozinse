@@ -13,7 +13,7 @@ type UsersHandlerInterface interface {
 
 type UsersServiceInterface interface {
 	GetProfile(uint) (*models.User, error)
-	EditProfile(user *models.User, name string, phone int) error
+	EditProfile(user *models.User, name string, phone int, birthdate string) error
 	ChangePassword(*models.User, string, string) error
 }
 

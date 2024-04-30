@@ -30,14 +30,15 @@ func (h *UsersHandler) EditProfile(c *gin.Context) {
 	}
 
 	var input struct {
-		Name  string `json:"name"`
-		Phone int    `json:"phone"`
+		Name      string `json:"name"`
+		Phone     int    `json:"phone"`
+		Birthdate string `json:"birthdate"`
 	}
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
 		return
 	}
-	err = h.service.EditProfile(user, input.Name, input.Phone)
+	err = h.service.EditProfile(user, input.Name, input.Phone, input.Birthdate)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
 		return

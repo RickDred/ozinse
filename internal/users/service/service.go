@@ -26,13 +26,14 @@ func (s *UsersService) GetProfile(id uint) (*models.User, error) {
 	return user, nil
 }
 
-func (s *UsersService) EditProfile(user *models.User, name string, phone int) error {
+func (s *UsersService) EditProfile(user *models.User, name string, phone int, birthdate string) error {
 	reUser, err := s.repo.GetUser(user.ID)
 	if err != nil {
 		return err
 	}
 	reUser.Name = name
 	reUser.Phone = phone
+	reUser.Birthdate = birthdate
 	if err := s.repo.UpdateUser(reUser); err != nil {
 		return err
 	}

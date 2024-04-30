@@ -14,7 +14,7 @@ type HandlersInterface interface {
 }
 
 type ServiceInterface interface {
-	Register(context.Context, *models.User) (string, error)
+	Register(context.Context, *models.User, string) (string, error)
 	Login(context.Context, *models.User) (string, error)
 }
 

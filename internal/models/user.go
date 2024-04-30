@@ -11,12 +11,13 @@ import (
 
 type User struct {
 	gorm.Model
-	Email    string   `gorm:"unique" json:"email"`
-	Password string   `json:"password"`
-	Name     string   `json:"name"`
-	Phone    int      `json:"phone"`
-	Role     string   `json:"role"`
-	Movies   []*Movie `gorm:"many2many:user_favorites;"`
+	Email     string   `gorm:"unique" json:"email"`
+	Password  string   `json:"password"`
+	Name      string   `json:"name"`
+	Phone     int      `json:"phone"`
+	Role      string   `json:"role"`
+	Birthdate string   `json:"birthdate"`
+	Movies    []*Movie `gorm:"many2many:user_favorites;"`
 }
 
 var (
@@ -38,7 +39,7 @@ func (u *User) Validate(fs ...func() error) error {
 }
 
 func (u *User) ValidatePassword() error {
-	if len(u.Password) < 4 || len(u.Password) > 35 {
+	if len(u.Password) < 8 || len(u.Password) > 35 {
 		return ErrWrongPassword
 	}
 	return nil

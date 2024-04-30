@@ -7,8 +7,9 @@ import (
 
 func (t *transport) Register(c *gin.Context) {
 	var credentials struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Email            string `json:"email"`
+		Password         string `json:"password"`
+		RepeatedPassword string `json:"repeated_password"`
 	}
 
 	if err := c.ShouldBindJSON(&credentials); err != nil {
@@ -21,7 +22,7 @@ func (t *transport) Register(c *gin.Context) {
 		Password: credentials.Password,
 	}
 
-	token, err := t.service.Register(c, user)
+	token, err := t.service.Register(c, user, credentials.RepeatedPassword)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return

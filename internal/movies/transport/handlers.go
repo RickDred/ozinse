@@ -32,17 +32,25 @@ func (h *MovieHandler) GetMovies(c *gin.Context) {
 
 // GetMovie handles the HTTP request to get a single movie by ID.
 func (h *MovieHandler) GetMovie(c *gin.Context) {
+	user, err := helpers.GetUserFromGin(c)
+	if err != nil {
+		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+		return
+	}
 	movieID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	movie, err := h.movieService.GetMovieByID(c.Request.Context(), uint(movieID))
+	movie, isFav, err := h.movieService.GetMovieByID(c.Request.Context(), user, uint(movieID))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, movie)
+	c.JSON(http.StatusOK, gin.H{
+		"movie":       movie,
+		"is_favorite": isFav,
+	})
 }
 
 func (h *MovieHandler) CreateMovie(c *gin.Context) {

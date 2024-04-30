@@ -14,6 +14,7 @@ type Movie struct {
 	Minutes     int
 	Screenshots []string    `gorm:"type:text[]"`
 	Categories  []*Category `gorm:"many2many:movie_categories;"`
+	Genres      []*Genre    `gorm:"many2many:movie_genres"`
 	Users       []*User     `gorm:"many2many:user_favorites;"`
 }
 

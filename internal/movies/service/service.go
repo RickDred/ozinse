@@ -18,16 +18,21 @@ func NewMovieService(movieRepo movies.MovieRepositoryInterface) movies.MovieServ
 	}
 }
 
-func (s *MovieService) GetMovieByID(ctx context.Context, id uint) (*models.Movie, error) {
+func (s *MovieService) GetMovieByID(ctx context.Context, user *models.User, id uint) (*models.Movie, bool, error) {
 	movie, err := s.repo.GetByID(ctx, id)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 	if movie == nil {
-		return nil, errors.New("movie not found")
+		return nil, false, errors.New("movie not found")
 	}
 
-	return movie, nil
+	isFav, err := s.repo.IsFavorite(ctx, user, id)
+	if err != nil {
+		return nil, false, err
+	}
+
+	return movie, isFav, nil
 }
 
 func (s *MovieService) CreateMovie(ctx context.Context, movie *models.Movie) (*models.Movie, error) {

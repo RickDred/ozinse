@@ -50,3 +50,15 @@ func (r *MovieRepository) DeleteFavority(ctx context.Context, user *models.User,
 	}
 	return nil
 }
+
+func (r *MovieRepository) IsFavorite(ctx context.Context, user *models.User, movieID uint) (bool, error) {
+	if err := r.db.Model(user).Association("Movies").Find(&user.Movies); err != nil {
+		return false, errors.Wrap(err, "failed to preload user's favorite movies")
+	}
+	for _, favMovie := range user.Movies {
+		if favMovie.ID == movieID {
+			return true, nil
+		}
+	}
+	return false, nil
+}

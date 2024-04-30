@@ -28,7 +28,7 @@ type MovieHandlerInterface interface {
 
 // MovieServiceInterface defines the methods implemented by the movie service.
 type MovieServiceInterface interface {
-	GetMovieByID(context.Context, uint) (*models.Movie, error)
+	GetMovieByID(context.Context, *models.User, uint) (*models.Movie, bool, error)
 	GetMovies(context.Context) ([]models.Movie, error)
 	CreateMovie(context.Context, *models.Movie) (*models.Movie, error)
 	EditMovie(context.Context, uint, *models.Movie) (*models.Movie, error)
@@ -62,4 +62,5 @@ type MovieRepositoryInterface interface {
 	AddToFavorites(context.Context, *models.User, uint) error
 	GetFavorites(context.Context, *models.User) ([]models.Movie, error)
 	DeleteFavority(context.Context, *models.User, uint) error
+	IsFavorite(context.Context, *models.User, uint) (bool, error)
 }

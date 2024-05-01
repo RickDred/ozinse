@@ -10,12 +10,8 @@ import (
 
 // @title Ozinse API
 // @version         1.0
-// @description     This is a sample server celler server.
+// @description     Api for ozinse application.
 // @termsOfService  http://swagger.io/terms/
-
-// @contact.name   API Support
-// @contact.url    http://www.swagger.io/support
-// @contact.email  support@swagger.io
 
 // @host      localhost:3000
 // @BasePath  /
@@ -23,6 +19,10 @@ import (
 
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/
+
+// @securityDefinitions.ApiKey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	cfg := config.NewConfig()
 

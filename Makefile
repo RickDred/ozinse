@@ -9,6 +9,9 @@ postgres_run:
 	
 swagger_init:
 	swag init --parseDependency --parseInternal -g cmd/api/main.go 
+
+insert_swagger:
+	export PATH=$PATH:$HOME/go/bin
 	
 # postgres_create_db:
 # 	docker exec -it postgresql bash

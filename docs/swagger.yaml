@@ -98,20 +98,62 @@ definitions:
       updatedAt:
         type: string
     type: object
+  transport.errorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  transport.regCredentials:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      repeated_password:
+        type: string
+    type: object
+  transport.tokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
 host: localhost:3000
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
-  description: This is a sample server celler server.
+  contact: {}
+  description: Api for ozinse application.
   termsOfService: http://swagger.io/terms/
   title: Ozinse API
   version: "1.0"
 paths:
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the provided email and password
+      parameters:
+      - description: Registration credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/transport.regCredentials'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/transport.tokenResponse'
+        "400":
+          description: Error
+          schema:
+            $ref: '#/definitions/transport.errorResponse'
+      summary: Register a new user
+      tags:
+      - Authentication
   /users/{id}:
     get:
       consumes:
@@ -135,4 +177,9 @@ paths:
       - users
 schemes:
 - http
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

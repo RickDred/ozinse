@@ -15,6 +15,8 @@ type Config struct {
 	Port     int
 	Host     string
 	Postgres PostgresConfig
+	JWT      JWTConfig
+	Email    EmailConfig
 }
 
 type PostgresConfig struct {
@@ -24,6 +26,19 @@ type PostgresConfig struct {
 	Password string
 	DBName   string
 	SSLMode  string
+}
+
+type JWTConfig struct {
+	SecretKey string
+	Expire    int
+}
+
+type EmailConfig struct {
+	Host     string
+	Username string
+	Password string
+	Identity string
+	Addr     string
 }
 
 func NewConfig() *Config {
@@ -41,6 +56,11 @@ func NewConfig() *Config {
 		postgresPort = 5432
 	}
 
+	expire, err := strconv.Atoi(getEnv("JWT_EXPIRE", "60"))
+	if err != nil {
+		expire = 60
+	}
+
 	cfg := &Config{
 		Port: port,
 		Host: getEnv("SERVER_HOST", "localhost"),
@@ -51,6 +71,17 @@ func NewConfig() *Config {
 			Password: getEnv("DB_PASSWORD", "password"),
 			DBName:   getEnv("DB_NAME", "ozinse"),
 			SSLMode:  getEnv("DB_SSLMODE", "disable"),
+		},
+		JWT: JWTConfig{
+			SecretKey: getEnv("JWT_SECRET_KEY", "secret"),
+			Expire:    expire,
+		},
+		Email: EmailConfig{
+			Host:     getEnv("EMAIL_HOST", "smtp.example.com"),
+			Username: getEnv("EMAIL_USERNAME", "username@gmail.com"),
+			Password: getEnv("EMAIL_PASSWORD", "password"),
+			Identity: getEnv("EMAIL_IDENTITY", ""),
+			Addr:    getEnv("EMAIL_ADDR", "smtp.example.com:587"),
 		},
 	}
 

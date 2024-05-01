@@ -2,18 +2,28 @@ package service
 
 import (
 	"context"
+	"math/rand"
 	"strings"
+	"time"
 
+	"github.com/RickDred/ozinse/config"
 	"github.com/RickDred/ozinse/internal/auth"
 	"github.com/RickDred/ozinse/internal/models"
+	"github.com/RickDred/ozinse/pkg/smtp"
 )
 
 type service struct {
-	repo auth.RepoInterface
+	repo     auth.RepoInterface
+	jwtCfg   config.JWTConfig
+	emailCfg config.EmailConfig
 }
 
-func New(repo auth.RepoInterface) auth.ServiceInterface {
-	return &service{repo}
+func New(repo auth.RepoInterface, jwtCfg config.JWTConfig, emailCfg config.EmailConfig) auth.ServiceInterface {
+	return &service{
+		repo:     repo,
+		jwtCfg:   jwtCfg,
+		emailCfg: emailCfg,
+	}
 }
 
 func (s *service) Register(ctx context.Context, user *models.User, repeatedPassword string) (string, error) {
@@ -22,7 +32,7 @@ func (s *service) Register(ctx context.Context, user *models.User, repeatedPassw
 	repeatedPassword = strings.TrimSpace(repeatedPassword)
 
 	if repeatedPassword != user.Password {
-		return "", models.ErrWrongPassword
+		return "", models.ErrPasswrodsNotMatch
 	}
 
 	if err := user.Validate(user.ValidateEmail, user.ValidatePassword); err != nil {
@@ -44,7 +54,7 @@ func (s *service) Register(ctx context.Context, user *models.User, repeatedPassw
 
 	user.CleanPassword()
 
-	token, err := generateJWT(user)
+	token, err := s.generateJWT(user)
 	if err != nil {
 		return "", err
 	}
@@ -64,7 +74,7 @@ func (s *service) Login(ctx context.Context, input *models.User) (string, error)
 
 	user.CleanPassword()
 
-	token, err := generateJWT(user)
+	token, err := s.generateJWT(user)
 	if err != nil {
 		return "", err
 	}
@@ -78,18 +88,47 @@ func (s *service) PasswordRecover(ctx context.Context, user *models.User) (bool,
 		return false, err
 	}
 
-	if err := user.ValidatePassword(); err != nil {
+	// generate new password for user
+	newPassword := GeneratePassword(10)
+	user.Password = newPassword
+
+	if err := user.HashPassword(); err != nil {
 		return false, err
 	}
 
-	exUser.Password = user.Password
-	if err := exUser.HashPassword(); err != nil {
+	if err := s.repo.PasswordRecover(ctx, exUser.ID, user.Password); err != nil {
 		return false, err
 	}
 
-	if err := s.repo.PasswordRecover(ctx, exUser); err != nil {
+	// send email with new password
+
+	err = smtp.SendEmail(
+		s.emailCfg.Identity,
+		s.emailCfg.Username,
+		s.emailCfg.Password,
+		s.emailCfg.Host,
+		s.emailCfg.Addr,
+		"ozinse administartion",
+		user.Email,
+		"Password recovery",
+		"Your new password: "+newPassword,
+	)
+	if err != nil {
 		return false, err
 	}
 
 	return true, nil
+}
+
+func GeneratePassword(length int) string {
+	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+"
+
+	rand.Seed(time.Now().UnixNano())
+	password := make([]byte, length)
+
+	for i := 0; i < length; i++ {
+		password[i] = chars[rand.Intn(len(chars))]
+	}
+
+	return string(password)
 }

@@ -14,10 +14,9 @@ func main() {
 		panic(err)
 	}
 
-	app := api.Server{
-		DB:   db,
-		Port: cfg.Port,
-		Host: cfg.Host,
+	app := api.Api{
+		DB:  db,
+		Cfg: cfg,
 	}
 
 	app.Start()

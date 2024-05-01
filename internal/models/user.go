@@ -24,6 +24,7 @@ var (
 	ErrWrongPasswordOrEmail = errors.New("wrong email or/and password")
 	ErrEmailExists          = errors.New("this email exists")
 	ErrWrongPassword        = errors.New("wrong Password")
+	ErrPasswrodsNotMatch    = errors.New("passwords not match")
 	ErrEmailNotValid        = errors.New("email not valid")
 )
 

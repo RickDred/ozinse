@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 
+	"github.com/RickDred/ozinse/config"
 	"github.com/RickDred/ozinse/internal/auth"
 	arepo "github.com/RickDred/ozinse/internal/auth/repository"
 	aservice "github.com/RickDred/ozinse/internal/auth/service"
@@ -20,13 +21,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type Server struct {
-	DB   *gorm.DB
-	Port int
-	Host string
+type Api struct {
+	DB  *gorm.DB
+	Cfg *config.Config
 }
 
-func (a *Server) Start() {
+func (a *Api) Start() {
 	if err := a.DB.AutoMigrate(&models.User{}, &models.Movie{}, &models.Video{}, &models.Category{}, &models.Genre{}); err != nil {
 		panic(err)
 	}
@@ -35,7 +35,7 @@ func (a *Server) Start() {
 
 	// need to move into other function
 	authrepo := arepo.New(a.DB)
-	authservice := aservice.New(authrepo)
+	authservice := aservice.New(authrepo, a.Cfg.JWT, a.Cfg.Email)
 	authhandlers := atransport.New(authservice)
 	authGorup := router.Group("/auth")
 	auth.SetRoutes(authGorup, authhandlers)
@@ -54,7 +54,7 @@ func (a *Server) Start() {
 	usersGroup := router.Group("/users")
 	users.InitRoutes(usersGroup, usershandl)
 
-	addr := fmt.Sprintf("%v:%v", a.Host, a.Port)
+	addr := fmt.Sprintf("%v:%v", a.Cfg.Host, a.Cfg.Port)
 
 	// authservice.Register(context.Background(), &models.User{
 	// 	Email:    "admin@admin.com",

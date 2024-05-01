@@ -26,5 +26,5 @@ type RepoInterface interface {
 	GetByEmail(context.Context, string) (*models.User, error)
 	GetByID(context.Context, uint) (*models.User, error)
 	GetAll(context.Context) ([]models.User, error)
-	PasswordRecover(context.Context, *models.User) error
+	PasswordRecover(context.Context, uint, string) error
 }

@@ -7,6 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Get user by ID
+// @Description get string by ID
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path int true "User ID"
+// @Success 200 {object} models.User
+// @Router /users/{id} [get]
 func (h *UsersHandler) GetProfile(c *gin.Context) {
 	id := c.Param("id")
 	userID, err := strconv.Atoi(id)

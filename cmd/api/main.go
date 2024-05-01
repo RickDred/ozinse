@@ -1,10 +1,11 @@
 package main
 
 import (
-	_ "github.com/RickDred/ozinse/docs"
 	"github.com/RickDred/ozinse/config"
+	_ "github.com/RickDred/ozinse/docs"
 	"github.com/RickDred/ozinse/internal/api"
 	"github.com/RickDred/ozinse/pkg/db"
+	"github.com/gin-gonic/gin"
 )
 
 // @title Ozinse API
@@ -34,6 +35,7 @@ func main() {
 		DB:  db,
 		Cfg: cfg,
 	}
+	router := gin.New()
 
-	app.Start()
+	app.Start(router)
 }

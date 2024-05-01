@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/RickDred/ozinse/config"
+	_ "github.com/RickDred/ozinse/docs"
 	"github.com/RickDred/ozinse/internal/auth"
 	arepo "github.com/RickDred/ozinse/internal/auth/repository"
 	aservice "github.com/RickDred/ozinse/internal/auth/service"
@@ -18,9 +19,9 @@ import (
 	uservice "github.com/RickDred/ozinse/internal/users/service"
 	utransport "github.com/RickDred/ozinse/internal/users/transport"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/gorm"
 )
 
 type Api struct {
@@ -28,11 +29,11 @@ type Api struct {
 	Cfg *config.Config
 }
 
-func (a *Api) Start() {
+func (a *Api) Start(router *gin.Engine) {
 	if err := a.DB.AutoMigrate(&models.User{}, &models.Movie{}, &models.Video{}, &models.Category{}, &models.Genre{}); err != nil {
 		panic(err)
 	}
-	router := gin.New()
+	//router := gin.New()
 	router.Use(gin.Logger())
 
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

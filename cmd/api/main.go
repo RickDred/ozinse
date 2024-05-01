@@ -6,6 +6,8 @@ import (
 	"github.com/RickDred/ozinse/pkg/db"
 )
 
+
+// @title Ozinse API
 func main() {
 	cfg := config.NewConfig()
 

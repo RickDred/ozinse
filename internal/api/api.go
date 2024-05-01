@@ -19,6 +19,8 @@ import (
 	utransport "github.com/RickDred/ozinse/internal/users/transport"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	swaggerFiles "github.com/swaggo/files"
 )
 
 type Api struct {
@@ -32,6 +34,8 @@ func (a *Api) Start() {
 	}
 	router := gin.New()
 	router.Use(gin.Logger())
+
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// need to move into other function
 	authrepo := arepo.New(a.DB)

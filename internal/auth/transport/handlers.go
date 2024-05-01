@@ -3,8 +3,16 @@ package transport
 import (
 	"github.com/RickDred/ozinse/internal/models"
 	"github.com/gin-gonic/gin"
+	_ "github.com/RickDred/ozinse/docs"
 )
 
+// RegisterUser godocs
+// @Summary Register a new user
+// @Description Register a new user
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param email body string true "Email"
 func (t *transport) Register(c *gin.Context) {
 	var credentials struct {
 		Email            string `json:"email"`

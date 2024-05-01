@@ -60,6 +60,11 @@ func (t *transport) PasswordRecover(c *gin.Context) {
 	var credentials struct {
 		Email string `json:"email"`
 	}
+	if err := c.ShouldBindJSON(&credentials); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
 	user := &models.User{
 		Email: credentials.Email,
 	}

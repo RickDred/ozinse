@@ -131,3 +131,21 @@ func (r *MovieRepository) Search(ctx context.Context, filters models.MoviesFilte
 
 	return movies, nil
 }
+
+func (r *MovieRepository) GetMoviesByGenres(ctx context.Context, genres []models.Genre) ([]models.Movie, error) {
+	var movies []models.Movie
+
+	query := r.db.WithContext(ctx)
+
+	for _, genre := range genres {
+		query = query.Joins("JOIN movie_genres ON movies.id = movie_genres.movie_id").
+			Joins("JOIN genres ON movie_genres.genre_id = genres.id").
+			Where("genres.name = ?", genre.Name)
+	}
+
+	if err := query.Find(&movies).Error; err != nil {
+		return nil, err
+	}
+
+	return movies, nil
+}

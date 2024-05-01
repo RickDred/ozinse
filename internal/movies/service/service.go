@@ -18,21 +18,45 @@ func NewMovieService(movieRepo movies.MovieRepositoryInterface) movies.MovieServ
 	}
 }
 
-func (s *MovieService) GetMovieByID(ctx context.Context, user *models.User, id uint) (*models.Movie, bool, error) {
+func (s *MovieService) GetMovieByID(ctx context.Context, user *models.User, id uint) (*models.Movie, bool, []models.Movie, error) {
 	movie, err := s.repo.GetByID(ctx, id)
 	if err != nil {
-		return nil, false, err
+		return nil, false, nil, err
 	}
 	if movie == nil {
-		return nil, false, errors.New("movie not found")
+		return nil, false, nil, errors.New("movie not found")
 	}
 
 	isFav, err := s.repo.IsFavorite(ctx, user, id)
 	if err != nil {
-		return nil, false, err
+		return nil, false, nil, err
 	}
 
-	return movie, isFav, nil
+	// make movie.Genres from []*models.Genre to []models.Genre
+	genres := make([]models.Genre, len(movie.Genres))
+	for i, genre := range movie.Genres {
+		genres[i] = *genre
+	}
+
+	sameMovies, err := s.repo.GetMoviesByGenres(ctx, genres)
+	if err != nil {
+		return nil, false, nil, err
+	}
+	if len(sameMovies) > 2 {
+		return movie, isFav, sameMovies, nil
+	}
+	for _, cat := range movie.Categories {
+		sameByCat, err := s.repo.GetAllByCategory(ctx, cat.Name)
+		if err != nil {
+			continue
+		}
+		sameMovies = append(sameMovies, sameByCat...)
+		if len(sameMovies) > 2 {
+			break
+		}
+	}
+
+	return movie, isFav, sameMovies, nil
 }
 
 func (s *MovieService) CreateMovie(ctx context.Context, movie *models.Movie) (*models.Movie, error) {
@@ -75,4 +99,3 @@ func (s *MovieService) UploadVideo(ctx context.Context, video *models.Video) (*m
 func (s *MovieService) SearchMovies(ctx context.Context, filters models.MoviesFilter) ([]models.Movie, error) {
 	return s.repo.Search(ctx, filters)
 }
-

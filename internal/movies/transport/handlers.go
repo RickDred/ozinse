@@ -42,7 +42,7 @@ func (h *MovieHandler) GetMovie(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	movie, isFav, err := h.movieService.GetMovieByID(c.Request.Context(), user, uint(movieID))
+	movie, isFav, sameMovies, err := h.movieService.GetMovieByID(c.Request.Context(), user, uint(movieID))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -50,6 +50,7 @@ func (h *MovieHandler) GetMovie(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"movie":       movie,
 		"is_favorite": isFav,
+		"same_movies": sameMovies,
 	})
 }
 

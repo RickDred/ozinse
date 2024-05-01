@@ -28,7 +28,7 @@ type MovieHandlerInterface interface {
 
 // MovieServiceInterface defines the methods implemented by the movie service.
 type MovieServiceInterface interface {
-	GetMovieByID(context.Context, *models.User, uint) (*models.Movie, bool, error)
+	GetMovieByID(context.Context, *models.User, uint) (*models.Movie, bool, []models.Movie, error)
 	GetMovies(context.Context) ([]models.Movie, error)
 	CreateMovie(context.Context, *models.Movie) (*models.Movie, error)
 	EditMovie(context.Context, uint, *models.Movie) (*models.Movie, error)
@@ -53,6 +53,7 @@ type MovieRepositoryInterface interface {
 	Update(context.Context, uint, *models.Movie) (*models.Movie, error)
 	Delete(context.Context, uint) error
 	GetAllByCategory(context.Context, string) ([]models.Movie, error)
+	GetMoviesByGenres(context.Context, []models.Genre) ([]models.Movie, error)
 
 	GetMovieSeries(ctx context.Context, movieID uint) ([]models.Video, error)
 	UploadVideo(ctx context.Context, video *models.Video) (*models.Video, error)
